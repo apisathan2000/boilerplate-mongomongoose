@@ -1,4 +1,5 @@
 require("dotenv").config();
+const PersonModel = require("./PersonSchema.js");
 const mongoose = require("mongoose");
 
 const connectDB = async function (uri) {
@@ -6,19 +7,28 @@ const connectDB = async function (uri) {
     await mongoose.connect(uri);
     console.log("Successfully connected to MongoDB !", {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
- connectDB(process.env.MONGO_URI);
+connectDB(process.env.MONGO_URI);
 
 let Person;
+Person = PersonModel;
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const person = new Person({
+    name: "John Wick",
+    age: 25,
+    favoriteFoods: ["Pizza", "Burger", "Sandwich"],
+  });
+
+  person.save(function (err, data) {
+    return err ? done(err) : done(null, data);
+  });
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
